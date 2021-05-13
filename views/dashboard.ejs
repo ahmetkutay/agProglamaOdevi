@@ -1,3 +1,125 @@
-<h1 class="mt-4">Dashboard</h1>
-<p class="lead mb-3">Welcome <%= user.name %></p>
-<a href="/users/logout" class="btn btn-secondary">Logout</a>
+<html lant="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>ChitChat</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+      integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+      crossorigin="anonymous"
+    ></script>
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      input:focus,
+      button:focus {
+        outline: 0;
+      }
+      body {
+        font-family: "Poppins";
+      }
+      h2 {
+        font-size: 23px;
+        padding: 10px 20px;
+        color: #fff;
+        background-color: #0085ff;
+      }
+      #chat-wrap {
+        max-width: 600px;
+        margin: 30px auto;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #chat-window {
+        height: 400px;
+        overflow-y: auto;
+      }
+      #output p {
+        font-size: 15px;
+        padding: 12px;
+      }
+      #output p:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+      #feedback p {
+        font-size: 13px;
+        padding: 12px;
+      }
+      #output strong {
+        color: #0085ad;
+      }
+      input {
+        font-family: "Poppins";
+        padding: 10px 20px;
+        border: 0;
+        border-top: 1px solid #ccc;
+        display: block;
+        width: 100%;
+        font-size: 15px;
+      }
+      button {
+        font-family: "Poppins";
+        background-color: #0085ad;
+        color: #fff;
+        border: 0;
+        border-radius: 0 0 5px 5px;
+        width: 100%;
+        padding: 12px 0px;
+        font-size: 17px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat-wrap">
+      <h2>ChitChat</h2>
+      <div id="chat-window">
+        <div id="output"></div>
+        <div id="feedback"></div>
+      </div>
+
+      <input
+        type="text"
+        id="sender"
+        placeholder="<%= user.name %>"
+        disabled="true"
+      />
+      <input type="text" id="message" placeholder="Mesaj" />
+      <button id="submitBtn">Gonder</button>
+    </div>
+    <script charset="utf-8">
+      const socket = io.connect("http://localhost:5000");
+
+      const sender = (document.getElementById("sender").value =
+        "<%= user.name %>");
+      const message = document.getElementById("message");
+      const submitBtn = document.getElementById("submitBtn");
+      const output = document.getElementById("output");
+      const feedback = document.getElementById("feedback");
+
+      submitBtn.addEventListener("click", () => {
+        socket.emit("input", {
+          message: message.value,
+          name: sender,
+        });
+      });
+      socket.on("output", (data) => {
+        data.map((index) => {
+          let pStyle = "<%= user.name %>" === index.name ? "#f2f2f2" : "#fff";
+          output.innerHTML +=
+            `<p style=background-color:${pStyle} ><strong>` +
+            index.name +
+            " : " +
+            "</strong>" +
+            index.message +
+            "</p>";
+        });
+
+        message.value = "";
+      });
+    </script>
+  </body>
+</html>
