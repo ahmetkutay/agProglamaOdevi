@@ -108,7 +108,7 @@
       });
       socket.on("output", (data) => {
         data.map((index) => {
-          let pStyle = "<%= user.name %>" === index.name ? "#f2f2f2" : "#fff";
+          let pStyle = "<%= user.name %>" === index.name ? "#fff" : "#f2f2f2";
           output.innerHTML +=
             `<p style=background-color:${pStyle} ><strong>` +
             index.name +

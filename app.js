@@ -22,7 +22,6 @@ mongoose
     console.log("MongoDB Connected");
 
     io.on("connection", (socket) => {
-      console.log(socket.id);
       MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
         var dbo = db.db("agProg");
 
@@ -41,16 +40,14 @@ mongoose
           });
 
         socket.on("input", (data) => {
-          console.log("deneme");
           let name = data.name;
           let message = data.message;
-          console.log("data", data);
 
           chat.insertOne({ name: name, message: message }, function () {
-            socket.emit("output", [data]);
+            io.broadcast.emit("output", [data]);
           });
         });
-      });
+      }); //bura db
     });
   })
   .catch((err) => console.log(err));
