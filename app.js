@@ -44,7 +44,7 @@ mongoose
           let message = data.message;
 
           chat.insertOne({ name: name, message: message }, function () {
-            io.broadcast.emit("output", [data]);
+            socket.broadcast.emit("output", [data]);
           });
         });
       }); //bura db

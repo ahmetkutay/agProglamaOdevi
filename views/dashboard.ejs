@@ -91,7 +91,7 @@
       <button id="submitBtn">Gonder</button>
     </div>
     <script charset="utf-8">
-      const socket = io.connect("http://localhost:5000");
+      const socket = io.connect("http://localhost:5000/dashboard");
 
       const sender = (document.getElementById("sender").value =
         "<%= user.name %>");
