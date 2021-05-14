@@ -1,9 +1,42 @@
-<h1>Merhaba <%= user.name %></h1>
-<h2><%= users.map(index=>index.name) %></h2>
-<h2><%= users.map(index=>index.status) %></h2>
-<button>
-  <a href="/dashboard"> Broadcast </a>
-</button>
-<button>
-  <a href="/users/logout"> Logout</a>
-</button>
+<html>
+  <head>
+    <title>ShitChat</title>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <h1>Merhaba <%= user.name %></h1>
+
+    <div id="personsInfo"></div>
+    <button>
+      <a href="/dashboard"> Broadcast </a>
+    </button>
+    <button>
+      <a href="/users/logout"> Logout</a>
+    </button>
+  </body>
+  <script type="text/javascript">
+    //console.log("<%= users.map(index => index.name) %>");
+    function getUser() {
+      users = "<%= users.map(index => index.name) %>";
+      usersStatus = "<%= users.map(index => index.status) %>";
+      var names = users.split(",");
+      var status = usersStatus.split(",");
+      var tabletop = "<table> <tr><th> Kullanıcılar </th></tr>";
+      var main = "";
+      for (let i = 0; i < names.length; i++) {
+        main +=
+          "<tr><td><a href='/user-to-user'>" +
+          names[i] +
+          "</a>" +
+          " " +
+          status[i] +
+          "</td></tr>";
+      }
+      var tablebottom = "</table>";
+      var table = tabletop + main + tablebottom;
+
+      document.getElementById("personsInfo").innerHTML = table;
+    }
+    getUser();
+  </script>
+</html>

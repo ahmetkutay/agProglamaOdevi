@@ -50,6 +50,13 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
           users: totalUsers,
         });
       });
+
+      router.get("/user-to-user", ensureAuthenticated, (req, res) => {
+        res.render("usertouser", {
+          user: req.user,
+          users: totalUsers,
+        });
+      });
     });
 });
 

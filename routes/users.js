@@ -92,20 +92,18 @@ router.post("/login", (req, res, next) => {
 });
 
 // Logout
-router.get("/logout", (req, res) => {
-  console.log(req.user);
-  MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
-    var dbo = db.db("agProg");
-    let users = dbo.collection("users");
-    users
-      .find({})
-      .limit(100)
-      .sort({ _id: 1 })
-      .toArray(function (err, res) {
-        if (err) {
-          throw err;
-        }
-
+MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
+  var dbo = db.db("agProg");
+  let users = dbo.collection("users");
+  users
+    .find({})
+    .limit(100)
+    .sort({ _id: 1 })
+    .toArray(function (err, res) {
+      if (err) {
+        throw err;
+      }
+      router.get("/logout", (req, res) => {
         var offlineUser = {
           statusControl: false,
           status: "offline",
@@ -123,12 +121,11 @@ router.get("/logout", (req, res) => {
             assert.strictEqual(null, err);
           }
         );
+        req.logout();
+        req.flash("success_msg", "You are logged out");
+        res.redirect("/users/login");
       });
-  });
-
-  req.logout();
-  req.flash("success_msg", "You are logged out");
-  res.redirect("/users/login");
+    });
 });
 
 module.exports = router;
