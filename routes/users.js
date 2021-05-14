@@ -5,6 +5,10 @@ const passport = require("passport");
 // Load User model
 const User = require("../models/User");
 const { forwardAuthenticated } = require("../config/auth");
+var MongoClient = require("mongodb").MongoClient;
+var mongo = require("mongodb");
+var assert = require("assert");
+const db = require("../config/keys").mongoURI;
 
 // Login Page
 router.get("/login", forwardAuthenticated, (req, res) => res.render("login"));
@@ -89,6 +93,39 @@ router.post("/login", (req, res, next) => {
 
 // Logout
 router.get("/logout", (req, res) => {
+  console.log(req.user);
+  MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
+    var dbo = db.db("agProg");
+    let users = dbo.collection("users");
+    users
+      .find({})
+      .limit(100)
+      .sort({ _id: 1 })
+      .toArray(function (err, res) {
+        if (err) {
+          throw err;
+        }
+
+        var offlineUser = {
+          statusControl: false,
+          status: "offline",
+          connectionId: req.user.connectionId,
+          name: req.user.name,
+          email: req.user.email,
+          password: req.user.password,
+          date: req.user.date,
+        };
+
+        users.updateOne(
+          { _id: mongo.ObjectId(req.user.id) },
+          { $set: offlineUser },
+          function (err, result) {
+            assert.strictEqual(null, err);
+          }
+        );
+      });
+  });
+
   req.logout();
   req.flash("success_msg", "You are logged out");
   res.redirect("/users/login");
