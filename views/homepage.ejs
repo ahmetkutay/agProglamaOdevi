@@ -2,11 +2,22 @@
   <head>
     <title>ShitChat</title>
     <meta charset="UTF-8" />
+
+    <!---<meta http-equiv="refresh" content="1"> -->
   </head>
   <body>
     <h1>Merhaba <%= user.name %></h1>
 
     <div id="personsInfo"></div>
+    <h3>
+      Seçtiğiniz Oda:
+
+      <ul>
+        <h5>
+          <li><a href="/<%=user.room %>"><%=user.room %></a></li>
+        </h5>
+      </ul>
+    </h3>
     <button>
       <a href="/dashboard"> Broadcast </a>
     </button>
@@ -19,18 +30,24 @@
     function getUser() {
       users = "<%= users.map(index => index.name) %>";
       usersStatus = "<%= users.map(index => index.status) %>";
+      usersId = "<%= users.map(index => index._id) %>";
       var names = users.split(",");
+      var userId = usersId.split(",");
       var status = usersStatus.split(",");
+
       var tabletop = "<table> <tr><th> Kullanıcılar </th></tr>";
       var main = "";
       for (let i = 0; i < names.length; i++) {
-        main +=
-          "<tr><td><a href='/user-to-user'>" +
-          names[i] +
-          "</a>" +
-          " " +
-          status[i] +
-          "</td></tr>";
+        if (userId[i] === "<%=user._id%>") {
+        } else {
+          main +=
+            `<tr><td><a href='/user-to-user/${userId[i]}'>` +
+            names[i] +
+            "</a>" +
+            " " +
+            status[i] +
+            "</td></tr>";
+        }
       }
       var tablebottom = "</table>";
       var table = tabletop + main + tablebottom;

@@ -13,6 +13,7 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
   var dbo = db.db("agProg");
   let totalUsers;
   let users = dbo.collection("users");
+  let jsRoomUsers = dbo.collection("users");
   users
     .find({})
     .limit(100)
@@ -27,6 +28,7 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
           statusControl: true,
           status: "online",
           connectionId: req.user.connectionId,
+          room: req.user.room,
           name: req.user.name,
           email: req.user.email,
           password: req.user.password,
@@ -51,8 +53,54 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
         });
       });
 
-      router.get("/user-to-user", ensureAuthenticated, (req, res) => {
+      router.get("/user-to-user/:userId", ensureAuthenticated, (req, res) => {
         res.render("usertouser", {
+          user: req.user,
+          users: totalUsers,
+        });
+      });
+    });
+});
+
+//jsRoom
+MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
+  var dbo = db.db("agProg");
+  let totalUsers;
+  let jsRoomUsers = dbo.collection("users");
+  jsRoomUsers
+    .find({ room: "JavaScript" })
+    .limit(100)
+    .sort({ _id: 1 })
+    .toArray(function (err, res) {
+      if (err) throw err;
+
+      totalUsers = res;
+
+      router.get("/javascript", ensureAuthenticated, (req, res) => {
+        res.render("rooms/javascript", {
+          user: req.user,
+          users: totalUsers,
+        });
+      });
+    });
+});
+
+//pyRoom
+MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
+  var dbo = db.db("agProg");
+  let totalUsers;
+  let jsRoomUsers = dbo.collection("users");
+  jsRoomUsers
+    .find({ room: "Python" })
+    .limit(100)
+    .sort({ _id: 1 })
+    .toArray(function (err, res) {
+      if (err) throw err;
+
+      totalUsers = res;
+
+      router.get("/python", ensureAuthenticated, (req, res) => {
+        res.render("rooms/python", {
           user: req.user,
           users: totalUsers,
         });
@@ -62,13 +110,9 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
 
 // Dashboard
 router.get("/dashboard", ensureAuthenticated, (req, res) => {
-  if (req.user.status === false) {
-    router.get("/", forwardAuthenticated, (req, res) => res.render("welcome"));
-  } else {
-    res.render("dashboard", {
-      user: req.user,
-    });
-  }
+  res.render("dashboard", {
+    user: req.user,
+  });
 });
 
 module.exports = router;
