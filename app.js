@@ -9,13 +9,17 @@ var MongoClient = require("mongodb").MongoClient;
 const app = express();
 const server = app.listen(5000);
 const io = socket(server);
+var mongo = require("mongodb");
+var assert = require("assert");
 var chatUserModule = require("./module/userchatsmodule");
+var socketler = [];
 
 // Passport Config
 require("./config/passport")(passport);
 
 // DB Config
 const db = require("./config/keys").mongoURI;
+const { text } = require("express");
 
 // Connect to MongoDB and socket.io
 mongoose
@@ -26,10 +30,20 @@ mongoose
     io.on("connection", (socket) => {
       MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
         var dbo = db.db("agProg");
-        //let userChats = dbo.collection("userchats");
+        let userChats = dbo.collection("userchats");
         let jsRoom = dbo.collection("jschats");
         let pyRoom = dbo.collection("pychats");
         let chat = dbo.collection("chats");
+        let users = dbo.collection("users");
+
+        let user = socket.handshake.query.name;
+        users.updateOne(
+          { _id: mongo.ObjectId(user) },
+          { $set: { connectionId: socket.id } },
+          function (err, result) {
+            assert.strictEqual(null, err);
+          }
+        );
         chat
           .find({})
           .limit(100)
@@ -53,7 +67,6 @@ mongoose
         });
 
         socket.join("javascript");
-
         jsRoom
           .find({})
           .limit(100)
@@ -96,40 +109,68 @@ mongoose
           });
         });
 
-        /*
-        userChats
-          .find({
-            senderId: chatUserModule.getSender(),
-            receiverId: chatUserModule.getReceiver(),
-          })
-          .limit(100)
-          .sort({ _id: 1 })
-          .toArray(function (err, res) {
-            if (err) {
-              throw err;
-            }
+        socket.on("getMessages", (data) => {
+          userChats
+            .find({
+              $or: [
+                { senderId: user, recieverId: data.recieverId },
+                { senderId: data.recieverId, recieverId: user },
+              ],
+            })
+            .limit(100)
+            .sort({ _id: 1 })
+            .toArray(function (err, res) {
+              if (err) throw err;
+              //console.log(res);
+              socket.emit("userOutput", res);
+            });
+        });
 
-            socket.emit("outputUser", res);
-          });
-
-        socket.on("inputUser", (data) => {
-          let senderUserId = data.sendenId;
-          let receiverUserId = data.receiverId;
+        socket.on("userInput", (data) => {
           let name = data.name;
           let message = data.message;
-          chatUserModule.init(senderUserId, receiverUserId);
-          userChats.insertOne(
-            {
-              senderId: senderUserId,
-              receiverId: receiverUserId,
-              name: name,
-              message: message,
-            },
-            function () {
-              io.sockets.emit("outputUser", [data]);
+          let recieverId = data.recieverId;
+          let myConnId = data.myConnId;
+
+          //console.log(data);
+          //console.log(name);
+          let recUserConn = "";
+          receiverUsers = users.findOne(
+            { _id: mongo.ObjectId(recieverId) },
+            function (err, res) {
+              if (err) throw err;
+              //console.log(res);
+              recUserConn = res.connectionId;
+              if (recUserConn === null || recUserConn === "") {
+                userChats.insertOne(
+                  {
+                    name: name,
+                    message: message,
+                    recieverId: recieverId,
+                    senderId: user,
+                  },
+                  function (err, result) {
+                    io.to(myConnId).emit("userOutput", [data]);
+                  }
+                );
+              } else {
+                userChats.insertOne(
+                  {
+                    name: name,
+                    message: message,
+                    recieverId: recieverId,
+                    senderId: user,
+                  },
+                  function (err, result) {
+                    io.to(recUserConn).to(myConnId).emit("userOutput", [data]);
+                  }
+                );
+              }
+              //return res;
             }
           );
-        });*/
+          // io.sockets.emit("userOutput", [data]);
+        });
       }); //bura db
     });
   })

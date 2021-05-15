@@ -47,6 +47,8 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
         } else {
           if (totalUsers.statusControl === true) return;
         }
+        //console.log(totalUsers);
+
         res.render("homepage", {
           user: req.user,
           users: totalUsers,

@@ -26,7 +26,6 @@
     </button>
   </body>
   <script type="text/javascript">
-    //console.log("<%= users.map(index => index.name) %>");
     function getUser() {
       users = "<%= users.map(index => index.name) %>";
       usersStatus = "<%= users.map(index => index.status) %>";
@@ -34,6 +33,7 @@
       var names = users.split(",");
       var userId = usersId.split(",");
       var status = usersStatus.split(",");
+      //console.log(users, usersStatus);
 
       var tabletop = "<table> <tr><th> Kullanıcılar </th></tr>";
       var main = "";
