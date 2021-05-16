@@ -13,16 +13,16 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
   var dbo = db.db("agProg");
   let totalUsers;
   let users = dbo.collection("users");
-  let jsRoomUsers = dbo.collection("users");
+
   users
     .find({})
     .limit(100)
     .sort({ _id: 1 })
-    .toArray(function (err, res) {
+    .toArray(function (err, result) {
       if (err) {
         throw err;
       }
-      totalUsers = res;
+      totalUsers = result;
       router.get("/home", ensureAuthenticated, (req, res) => {
         var onlineUser = {
           statusControl: true,
@@ -44,15 +44,17 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
               assert.strictEqual(null, err);
             }
           );
-        } else {
-          if (totalUsers.statusControl === true) return;
         }
-        //console.log(totalUsers);
-
-        res.render("homepage", {
-          user: req.user,
-          users: totalUsers,
-        });
+        users
+          .find({})
+          .sort({ _id: 1 })
+          .toArray(function (err, result) {
+            if (err) throw err;
+            res.render("homepage", {
+              user: req.user,
+              users: result,
+            });
+          });
       });
 
       router.get("/user-to-user/:userId", ensureAuthenticated, (req, res) => {
