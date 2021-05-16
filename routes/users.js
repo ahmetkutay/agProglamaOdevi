@@ -114,7 +114,7 @@ MongoClient.connect(db, { useUnifiedTopology: true }, function (err, db) {
           name: req.user.name,
           email: req.user.email,
           password: req.user.password,
-          date: req.user.date,
+          date: req.user.data,
         };
 
         users.updateOne(

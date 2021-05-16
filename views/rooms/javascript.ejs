@@ -276,13 +276,11 @@
       //get Room users
       function getUser() {
         users = "<%= users.map(index => index.name) %>";
-        usersStatus = "<%= users.map(index => index.status) %>";
         var names = users.split(",");
-        var status = usersStatus.split(",");
         var tabletop = "<table>";
         var main = "";
         for (let i = 0; i < names.length; i++) {
-          main += `<tr><td>` + names[i] + " " + status[i] + "</td></tr>";
+          main += `<tr><td>` + names[i] + "</td></tr>";
         }
         var tablebottom = "</table>";
         var table = tabletop + main + tablebottom;
