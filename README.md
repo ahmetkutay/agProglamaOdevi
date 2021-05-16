@@ -1,23 +1,22 @@
-# Node.js & Passport Login
+# Sakarya Üniversitesi Bilgisayar Mühendisliği Ağ Programlama Ödevi
 
-This is a user login and registration app using Node.js, Express, Passport, Mongoose, EJS and some other packages.
-
-### Version: 2.0.0
-
-### Usage
+Bu chat uygulaması yapılırken Node.js, Express, Passport, Mongoose, EJS, socket.io ve bazı diğer paketleri kullanmıştır.
 
 ```sh
 $ npm install
 ```
 
-```sh
+# Or Nodemon ile başlatmak için aşağıdaki iki yöntemide deneyebilirsiniz.
+
 $ npm start
-# Or run with Nodemon
 $ npm run dev
 
-# Visit http://localhost:5000
+# http://localhost:5000 sayfasına gidiniz.
+
 ```
 
-### MongoDB
+### Uygulamayı Yapan Üyeler
 
-Open "config/keys.js" and add your MongoDB URI, local or Atlas
+Ahmet Kutay Karacair
+Orhun Özdemir
+```
