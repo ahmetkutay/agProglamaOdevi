@@ -2,21 +2,24 @@
 
 Bu chat uygulaması yapılırken Node.js, Express, Passport, Mongoose, EJS, socket.io ve bazı diğer paketleri kullanmıştır.
 
+# Projeyi başlatmadan önce paketleri indiriniz. 
 ```sh
 $ npm install
 ```
+# Nodemon ile başlatmak için aşağıdaki iki yöntemide deneyebilirsiniz.
 
-# Or Nodemon ile başlatmak için aşağıdaki iki yöntemide deneyebilirsiniz.
-
+```sh
 $ npm start
 $ npm run dev
-
-# http://localhost:5000 sayfasına gidiniz.
-
 ```
 
-### Uygulamayı Yapan Üyeler
+```sh
+http://localhost:5000 sayfasına gidiniz.
+```
 
+# Uygulamayı Yapan Üyeler
+
+```sh
 Ahmet Kutay Karacair
 Orhun Özdemir
 ```
