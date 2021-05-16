@@ -11,8 +11,6 @@ const server = app.listen(5000);
 const io = socket(server);
 var mongo = require("mongodb");
 var assert = require("assert");
-var chatUserModule = require("./module/userchatsmodule");
-var socketler = [];
 
 // Passport Config
 require("./config/passport")(passport);
@@ -132,8 +130,6 @@ mongoose
           let recieverId = data.recieverId;
           let myConnId = data.myConnId;
 
-          //console.log(data);
-          //console.log(name);
           let recUserConn = "";
           receiverUsers = users.findOne(
             { _id: mongo.ObjectId(recieverId) },
@@ -166,12 +162,10 @@ mongoose
                   }
                 );
               }
-              //return res;
             }
           );
-          // io.sockets.emit("userOutput", [data]);
         });
-      }); //bura db
+      });
     });
   })
   .catch((err) => console.log(err));
