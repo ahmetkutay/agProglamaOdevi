@@ -1,5 +1,5 @@
 dbPassword =
-  "mongodb+srv://kralmox12:5gfEtIddTG367jTW@agprog.ekv47.mongodb.net/agProg?retryWrites=true&w=majority";
+  "mongodb keys";
 
 module.exports = {
   mongoURI: dbPassword,
